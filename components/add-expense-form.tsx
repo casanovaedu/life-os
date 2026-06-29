@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { Plus, X } from 'lucide-react'
 import { addExpense } from '@/lib/actions'
+import { useSWRConfig } from 'swr'
 
 const CATEGORIES = [
   'Supermarket', 'Restaurante / Bar', 'Compras', 'Transporte',
@@ -14,6 +15,7 @@ type Account = { id: string; name: string }
 export function AddExpenseForm({ accounts }: { accounts: Account[] }) {
   const [open, setOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
+  const { mutate } = useSWRConfig()
   const today = new Date().toISOString().split('T')[0]
 
   const [form, setForm] = useState({
@@ -33,6 +35,7 @@ export function AddExpenseForm({ accounts }: { accounts: Account[] }) {
     if (!amount || !form.concept) return
     startTransition(async () => {
       await addExpense({ ...form, amount })
+      mutate(key => true, undefined, { revalidate: true })
       setForm({ amount: '', concept: '', category: CATEGORIES[0], account: accounts[0]?.name ?? '', date: today })
       setOpen(false)
     })
@@ -53,7 +56,7 @@ export function AddExpenseForm({ accounts }: { accounts: Account[] }) {
       {open && (
         <div className="fixed inset-0 z-50 flex items-end" onClick={() => setOpen(false)}>
           <div
-            className="w-full rounded-t-3xl p-5 pb-10 space-y-4"
+            className="w-full rounded-t-3xl p-5 pb-10 space-y-4 overflow-y-auto max-h-[90vh]"
             style={{ background: 'var(--background)', border: '1px solid var(--surface-border)' }}
             onClick={e => e.stopPropagation()}
           >
@@ -70,11 +73,11 @@ export function AddExpenseForm({ accounts }: { accounts: Account[] }) {
               <div className="flex items-center gap-2 mt-1">
                 <span className="text-foreground/50 text-lg">€</span>
                 <input
-                  type="number"
-                  step="0.01"
+                  type="text"
+                  inputMode="decimal"
                   placeholder="0,00"
                   value={form.amount}
-                  onChange={e => set('amount', e.target.value)}
+                  onChange={e => set('amount', e.target.value.replace(',', '.'))}
                   className="flex-1 bg-transparent text-2xl font-bold text-foreground outline-none placeholder:text-foreground/20"
                   autoFocus
                 />

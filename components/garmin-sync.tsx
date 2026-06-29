@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { triggerGarminSync, confirmWorkout, confirmAllPendingWorkouts, discardWorkout } from '@/lib/actions'
 import { RefreshCw, Check, X, Zap } from 'lucide-react'
+import { useSWRConfig } from 'swr'
 
 const ACTIVITY_EMOJI: Record<string, string> = {
   run:      '🏃',
@@ -42,17 +43,18 @@ export function GarminSync({ pendingWorkouts }: { pendingWorkouts: PendingWorkou
   const [confirming, startConfirm] = useTransition()
   const [syncMsg, setSyncMsg] = useState<string | null>(null)
   const [dismissed, setDismissed] = useState<Set<string>>(new Set())
+  const { mutate } = useSWRConfig()
 
   const visible = pendingWorkouts.filter(w => !dismissed.has(w.id))
 
   function handleSync() {
     setSyncMsg(null)
     startSync(async () => {
-      try {
-        const res = await triggerGarminSync()
-        setSyncMsg(res ? `${res.imported} actividades importadas` : 'Sincronizado')
-      } catch (e) {
-        setSyncMsg(e instanceof Error ? e.message : 'Error de conexión')
+      const res = await triggerGarminSync()
+      if (res.error) {
+        setSyncMsg(res.error)
+      } else {
+        setSyncMsg(res.imported > 0 ? `${res.imported} actividades importadas` : 'Sincronizado ✓')
       }
     })
   }
@@ -61,6 +63,7 @@ export function GarminSync({ pendingWorkouts }: { pendingWorkouts: PendingWorkou
     startConfirm(async () => {
       await confirmWorkout(id)
       setDismissed(prev => new Set([...prev, id]))
+      mutate(key => true, undefined, { revalidate: true })
     })
   }
 
@@ -68,6 +71,7 @@ export function GarminSync({ pendingWorkouts }: { pendingWorkouts: PendingWorkou
     startConfirm(async () => {
       await discardWorkout(id)
       setDismissed(prev => new Set([...prev, id]))
+      mutate(key => true, undefined, { revalidate: true })
     })
   }
 
@@ -75,6 +79,7 @@ export function GarminSync({ pendingWorkouts }: { pendingWorkouts: PendingWorkou
     startConfirm(async () => {
       await confirmAllPendingWorkouts()
       setDismissed(new Set(pendingWorkouts.map(w => w.id)))
+      mutate(key => true, undefined, { revalidate: true })
     })
   }
 

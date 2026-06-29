@@ -222,21 +222,21 @@ export async function logHealthMetric(date: string, metric: string, value: numbe
 
 // ─── Garmin sync via n8n ─────────────────────────────────────────────────────
 
-export async function triggerGarminSync(): Promise<{ imported: number } | null> {
+export async function triggerGarminSync(): Promise<{ imported: number; error?: string }> {
   const webhookUrl = process.env.N8N_GARMIN_WEBHOOK_URL
-  if (!webhookUrl) throw new Error('N8N_GARMIN_WEBHOOK_URL not set in .env.local')
+  if (!webhookUrl) return { imported: 0, error: 'Webhook no configurado' }
   try {
     const res = await fetch(webhookUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'sync', days: 7 }),
     })
-    if (!res.ok) throw new Error(`n8n error: ${res.status}`)
+    if (!res.ok) return { imported: 0, error: `n8n error: ${res.status}` }
     const json = await res.json().catch(() => ({}))
     revalidatePath('/salud')
     return { imported: json.imported ?? 0 }
   } catch (e) {
-    throw e
+    return { imported: 0, error: e instanceof Error ? e.message : 'Error de conexión' }
   }
 }
 

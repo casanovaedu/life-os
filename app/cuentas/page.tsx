@@ -69,7 +69,7 @@ export default function CuentasPage() {
                 return <div key={type} className="h-full rounded-full" style={{ width: `${pct}%`, background: TYPE_CONFIG[type].color }} />
               })}
             </div>
-            <div className="flex items-center gap-4 mt-3">
+            <div className="flex items-center flex-wrap gap-x-4 gap-y-1 mt-3">
               {(['cash', 'savings', 'investment'] as const).map(type => {
                 const group = accountsByType[type] ?? []
                 const total = group.reduce((s: number, a: { balance: number }) => s + Math.max(0, Number(a.balance)), 0)
