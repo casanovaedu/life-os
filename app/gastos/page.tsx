@@ -46,6 +46,14 @@ function GastosContent() {
     return data ?? []
   })
 
+  const prevMonthEnd = `${prevY}-${String(prevM).padStart(2, '0')}-${String(new Date(prevY, prevM, 0).getDate()).padStart(2, '0')}`
+  const { data: prevExpenses = [] } = useSWR(`expenses-${prevMonthStart}`, async () => {
+    const { data } = await supabase.from('expenses')
+      .select('category,amount')
+      .gte('date', prevMonthStart).lte('date', prevMonthEnd)
+    return data ?? []
+  })
+
   const { data: accounts = [] } = useSWR('accounts-names', async () => {
     const { data } = await supabase.from('accounts').select('id,name').order('name')
     return data ?? []
@@ -59,8 +67,15 @@ function GastosContent() {
     return acc
   }, {})
 
-  const totalSpent  = expenses.reduce((s: number, e: { amount: number }) => s + Number(e.amount), 0)
-  const totalBudget = budgets.reduce((s: number, b: { amount: number }) => s + Number(b.amount), 0)
+  const prevSpendingMap = prevExpenses.reduce<Record<string, number>>((acc, e: { category: string; amount: number }) => {
+    acc[e.category] = (acc[e.category] ?? 0) + Number(e.amount)
+    return acc
+  }, {})
+
+  const totalSpent     = expenses.reduce((s: number, e: { amount: number }) => s + Number(e.amount), 0)
+  const prevTotalSpent = prevExpenses.reduce((s: number, e: { amount: number }) => s + Number(e.amount), 0)
+  const totalBudget    = budgets.reduce((s: number, b: { amount: number }) => s + Number(b.amount), 0)
+  const totalMomDiff   = prevTotalSpent > 0 ? ((totalSpent - prevTotalSpent) / prevTotalSpent) * 100 : null
   const isOver = totalSpent > totalBudget && totalBudget > 0
   const pct    = totalBudget > 0 ? Math.min((totalSpent / totalBudget) * 100, 100) : 0
   const hasPrevBudget = prevBudgets.length > 0
@@ -73,43 +88,51 @@ function GastosContent() {
       <div className="max-w-md mx-auto px-4 pt-8 space-y-5">
 
         <div>
-          <p className="text-xs text-foreground/40 uppercase tracking-widest font-medium mb-3">Gastos</p>
+          <p className="text-[10px] text-foreground/30 uppercase tracking-[0.18em] font-medium mb-3">Gastos</p>
           <MonthSelector current={current} />
         </div>
 
-        <div className="rounded-2xl p-5"
-          style={{ background: 'var(--surface)', border: '1px solid var(--surface-border)' }}>
-          <div className="flex items-end justify-between mb-3">
-            <div>
-              <p className="text-xs text-foreground/40 mb-1">Gastado</p>
-              <p className="text-3xl font-black text-foreground">{formatEuro(totalSpent)}</p>
-            </div>
-            <div className="text-right">
-              <p className="text-xs text-foreground/40 mb-1">Presupuesto</p>
-              <p className="text-lg font-bold text-foreground/50">{totalBudget > 0 ? formatEuro(totalBudget) : '—'}</p>
-            </div>
+        <div className="rounded-[22px] p-5" style={{
+          background: 'rgba(255,255,255,0.05)',
+          backdropFilter: 'blur(24px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+          border: '1px solid rgba(255,255,255,0.09)',
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.13)',
+        }}>
+          <div className="flex items-baseline gap-3 mb-2">
+            <p className="text-[11px] text-foreground/30 uppercase tracking-widest">Gastado</p>
+            {totalMomDiff !== null && Math.abs(totalMomDiff) >= 1 && (
+              <p className="text-[11px] font-semibold tabular-nums"
+                style={{ color: totalMomDiff > 0 ? '#FF9500' : '#BEFF00' }}>
+                {totalMomDiff > 0 ? '+' : ''}{totalMomDiff.toFixed(0)}% vs mes anterior
+              </p>
+            )}
           </div>
+          <p className="text-5xl font-black leading-none tracking-tight text-foreground mb-4">{formatEuro(totalSpent)}</p>
           {totalBudget > 0 ? (
             <>
-              <div className="h-2 bg-foreground/5 rounded-full overflow-hidden">
+              <div className="h-[3px] rounded-full overflow-hidden mb-2" style={{ background: 'rgba(255,255,255,0.07)' }}>
                 <div className="h-full rounded-full transition-all" style={{
                   width: `${pct}%`,
-                  background: isOver ? '#EF4444' : pct >= 75 ? 'linear-gradient(90deg, #F59E0B, #EF4444)' : 'linear-gradient(90deg, #6366F1, #8B5CF6)',
+                  background: isOver ? '#FF4444' : pct >= 75 ? '#FF9500' : '#BEFF00',
                 }} />
               </div>
-              <p className="text-xs text-foreground/30 mt-2">
-                {isOver ? `${formatEuro(totalSpent - totalBudget)} sobre presupuesto` : `Quedan ${formatEuro(totalBudget - totalSpent)}`}
-              </p>
+              <div className="flex justify-between items-baseline">
+                <p className="text-xs" style={{ color: isOver ? '#FF4444' : 'rgba(255,255,255,0.25)' }}>
+                  {isOver ? `${formatEuro(totalSpent - totalBudget)} sobre presupuesto` : `Quedan ${formatEuro(totalBudget - totalSpent)}`}
+                </p>
+                <p className="text-xs text-foreground/25">de {formatEuro(totalBudget)}</p>
+              </div>
             </>
           ) : (
             <p className="text-xs text-foreground/25">Sin presupuesto definido para este mes</p>
           )}
         </div>
 
-        <div className="rounded-2xl p-4"
+        <div className="rounded-[18px] p-4"
           style={{ background: 'var(--surface)', border: '1px solid var(--surface-border)' }}>
           <div className="flex items-center justify-between mb-4">
-            <p className="text-xs font-semibold text-foreground/40 uppercase tracking-widest">Por categoría</p>
+            <p className="text-[10px] text-foreground/30 uppercase tracking-[0.15em]">Por categoría</p>
             <BudgetEditor month={monthStart} budgets={budgets as { category: string; amount: number }[]}
               prevMonth={prevMonthStart} hasPrevBudget={hasPrevBudget} totalBudget={totalBudget} />
           </div>
@@ -121,15 +144,25 @@ function GastosContent() {
                 const budget = budgetMap[category]
                 if (!budget) return null
                 const spent = spendingMap[category] ?? 0
+                const prevSpent = prevSpendingMap[category] ?? 0
                 const catPct = Math.min((spent / budget) * 100, 100)
                 const isOverCat = spent > budget
                 const isWarnCat = catPct >= 75 && !isOverCat
-                const barColor = isOverCat ? '#EF4444' : isWarnCat ? '#F59E0B' : '#6366F1'
+                const barColor = isOverCat ? '#FF4444' : isWarnCat ? '#FF9500' : '#BEFF00'
+                const momDiff = prevSpent > 0 ? ((spent - prevSpent) / prevSpent) * 100 : null
                 return (
                   <div key={category}>
                     <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-sm text-foreground/75">{category}</span>
-                      <span className="text-xs tabular-nums font-medium" style={{ color: isOverCat ? '#EF4444' : undefined }}>
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="text-sm text-foreground/75 truncate">{category}</span>
+                        {momDiff !== null && Math.abs(momDiff) >= 5 && (
+                          <span className="text-[10px] font-semibold shrink-0 tabular-nums"
+                            style={{ color: momDiff > 0 ? '#FF9500' : '#BEFF00' }}>
+                            {momDiff > 0 ? '+' : ''}{momDiff.toFixed(0)}%
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-xs tabular-nums font-medium shrink-0" style={{ color: isOverCat ? '#EF4444' : undefined }}>
                         {formatEuro(spent)} <span className="text-foreground/20">/ {formatEuro(budget)}</span>
                       </span>
                     </div>
@@ -155,7 +188,7 @@ function GastosContent() {
         </div>
 
         <div>
-          <p className="text-xs font-semibold text-foreground/40 uppercase tracking-widest mb-3">
+          <p className="text-[10px] text-foreground/30 uppercase tracking-[0.15em] mb-3">
             Transacciones · {expenses.length}
           </p>
           <ExpenseList expenses={expenses} />

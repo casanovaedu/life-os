@@ -6,20 +6,7 @@ import { Button } from '@/components/ui/button'
 import { deleteExpense } from '@/lib/actions'
 import { formatEuro } from '@/lib/utils'
 
-const CATEGORY_COLORS: Record<string, { bg: string; text: string }> = {
-  'Supermarket':       { bg: 'rgba(34,197,94,0.15)',   text: '#4ade80' },
-  'Restaurante / Bar': { bg: 'rgba(239,68,68,0.15)',   text: '#f87171' },
-  'Compras':           { bg: 'rgba(251,191,36,0.15)',  text: '#fbbf24' },
-  'Transporte':        { bg: 'rgba(59,130,246,0.15)',  text: '#60a5fa' },
-  'Ocio':              { bg: 'rgba(168,85,247,0.15)',  text: '#c084fc' },
-  'Health':            { bg: 'rgba(236,72,153,0.15)',  text: '#f472b6' },
-  'Vet':               { bg: 'rgba(20,184,166,0.15)',  text: '#2dd4bf' },
-  'Varios':            { bg: 'rgba(249,115,22,0.15)',  text: '#fb923c' },
-  'Fitness':           { bg: 'rgba(99,102,241,0.15)',  text: '#818cf8' },
-  'Rent':              { bg: 'rgba(148,163,184,0.12)', text: '#94a3b8' },
-  'Subscriptions':     { bg: 'rgba(148,163,184,0.12)', text: '#94a3b8' },
-  'Lifestyle':         { bg: 'rgba(148,163,184,0.10)', text: '#64748b' },
-}
+const NEUTRAL_BADGE = { bg: 'rgba(255,255,255,0.06)', text: 'rgba(255,255,255,0.4)' }
 
 type Expense = {
   id: string
@@ -55,16 +42,14 @@ export function ExpenseList({ expenses: initial }: { expenses: Expense[] }) {
 
   return (
   <>
-    <div className="rounded-2xl overflow-hidden divide-y divide-foreground/5"
+    <div className="rounded-[18px] overflow-hidden"
       style={{ background: 'var(--surface)', border: '1px solid var(--surface-border)' }}>
-      {visible.map(expense => (
-        <div key={expense.id} className="flex items-center gap-3 px-4 py-3">
+      {visible.map((expense, idx) => (
+        <div key={expense.id} className="flex items-center gap-3 px-4 py-3"
+          style={idx > 0 ? { borderTop: '1px solid rgba(255,255,255,0.05)' } : undefined}>
           <div
-            className="size-9 rounded-2xl flex items-center justify-center shrink-0 text-sm font-bold"
-            style={{
-              background: (CATEGORY_COLORS[expense.category] ?? { bg: 'rgba(255,255,255,0.06)' }).bg,
-              color: (CATEGORY_COLORS[expense.category] ?? { text: 'rgba(255,255,255,0.5)' }).text,
-            }}
+            className="size-9 rounded-xl flex items-center justify-center shrink-0 text-[13px] font-bold"
+            style={{ background: NEUTRAL_BADGE.bg, color: NEUTRAL_BADGE.text }}
           >
             {expense.concept.charAt(0).toUpperCase()}
           </div>

@@ -31,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${exo2.variable} h-full antialiased`}>
       <head>
-        {/* Apply theme before first paint to avoid flash */}
+        <link rel="apple-touch-icon" href="/icon-192.png" />
         <script dangerouslySetInnerHTML={{ __html: `
           try {
             const t = localStorage.getItem('theme');

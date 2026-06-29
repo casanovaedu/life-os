@@ -1,0 +1,45 @@
+{
+  "name": "Life OS - Daily Net Worth Snapshot",
+  "nodes": [
+    {
+      "id": "a1b2c3d4-0001-0001-0001-000000000001",
+      "name": "Daily 23:50",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [240, 300],
+      "typeVersion": 1.2,
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "cronExpression", "expression": "50 23 * * *" }]
+        }
+      }
+    },
+    {
+      "id": "a1b2c3d4-0001-0001-0001-000000000002",
+      "name": "Snapshot Net Worth",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [480, 300],
+      "typeVersion": 4.2,
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/rpc/snapshot_net_worth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "={{ $env.SUPABASE_ANON_KEY }}" },
+            { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_ANON_KEY }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "body": "{}"
+      }
+    }
+  ],
+  "connections": {
+    "Daily 23:50": {
+      "main": [[{ "node": "Snapshot Net Worth", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" }
+}

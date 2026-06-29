@@ -38,7 +38,7 @@ export function BalanceEditor({ account }: { account: Account }) {
           autoFocus
           onKeyDown={e => { if (e.key === 'Enter') save(); if (e.key === 'Escape') setEditing(false) }}
         />
-        <button onClick={save} disabled={isPending} className="text-emerald-400">
+        <button onClick={save} disabled={isPending} style={{ color: '#BEFF00' }}>
           <Check className="size-4" />
         </button>
         <button onClick={() => setEditing(false)} className="text-foreground/30">

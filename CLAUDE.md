@@ -14,8 +14,8 @@ Personal financial + health dashboard. Replaces Google Sheets. Built for one use
 ## Supabase
 
 ```
-Project URL:  https://gururxpsdvjtobwxhhkh.supabase.co
-Anon key:     eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd1cnVyeHBzZHZqdG9id3hoaGtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzQzNzcsImV4cCI6MjA5ODE1MDM3N30.JWY3M2t9juUg__l5pzfqT1pRz0k8y0Ep7wLzaQtOXao
+Project URL:  https://<your-project-ref>.supabase.co
+Anon key:     <your-anon-key>
 ```
 
 Never commit the service_role key. Anon key is safe for client-side use (RLS is currently disabled — protect via auth session check instead).
@@ -154,7 +154,7 @@ When deleting an expense:
 2. POST to Supabase RPC `add_to_account`: `{ account_name: expense.account, add_amount: expense.amount }`
 
 ```
-POST https://gururxpsdvjtobwxhhkh.supabase.co/rest/v1/rpc/add_to_account
+POST https://<your-project-ref>.supabase.co/rest/v1/rpc/add_to_account
 Headers: apikey, Authorization: Bearer {anon_key}, Content-Type: application/json
 Body: { "account_name": "Revolut Cash", "add_amount": 12.50 }
 ```
@@ -169,10 +169,10 @@ Body: { "account_name": "Revolut Cash", "add_amount": 12.50 }
 
 ## Environment Variables
 
-Create `.env.local`:
+Create `.env.local` (copy from `.env.local.example`):
 ```
-NEXT_PUBLIC_SUPABASE_URL=https://gururxpsdvjtobwxhhkh.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd1cnVyeHBzZHZqdG9id3hoaGtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzQzNzcsImV4cCI6MjA5ODE1MDM3N30.JWY3M2t9juUg__l5pzfqT1pRz0k8y0Ep7wLzaQtOXao
+NEXT_PUBLIC_SUPABASE_URL=https://<your-project-ref>.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-anon-key>
 ```
 
 ## What Already Exists (do not rebuild)

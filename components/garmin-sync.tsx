@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { triggerGarminSync, confirmWorkout, confirmAllPendingWorkouts, discardWorkout } from '@/lib/actions'
+import { confirmWorkout, confirmAllPendingWorkouts, discardWorkout } from '@/lib/actions'
 import { RefreshCw, Check, X, Zap } from 'lucide-react'
 import { useSWRConfig } from 'swr'
 
@@ -50,11 +50,12 @@ export function GarminSync({ pendingWorkouts }: { pendingWorkouts: PendingWorkou
   function handleSync() {
     setSyncMsg(null)
     startSync(async () => {
-      const res = await triggerGarminSync()
-      if (res.error) {
-        setSyncMsg(res.error)
-      } else {
-        setSyncMsg(res.imported > 0 ? `${res.imported} actividades importadas` : 'Sincronizado ✓')
+      try {
+        const res = await fetch('/api/garmin-sync', { method: 'POST' })
+        const json = await res.json()
+        setSyncMsg(json.error ? json.error : json.imported > 0 ? `${json.imported} actividades importadas` : 'Sincronizado ✓')
+      } catch {
+        setSyncMsg('Error de conexión')
       }
     })
   }

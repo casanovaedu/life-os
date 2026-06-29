@@ -94,17 +94,24 @@
 }
 
 .dark {
-  /* Surface tokens for dark mode — visible cards on dark bg */
-  --surface: oklch(0.19 0 0);
-  --surface-border: oklch(0.28 0 0);
-  --surface-divider: oklch(0.22 0 0);
-  --nav-bg: oklch(0.17 0 0 / 80%);
-  --nav-border: rgba(255,255,255,0.12);
-  --nav-active-bg: rgba(255,255,255,0.14);
-  --nav-active-color: rgba(255,255,255,0.95);
-  --nav-inactive-color: rgba(255,255,255,0.35);
+  /* Electric lime + liquid glass design system */
+  --lime: #BEFF00;
+  --lime-muted: rgba(190,255,0,0.10);
 
-  --background: oklch(0.12 0 0);
+  /* Glass surfaces */
+  --surface: rgba(255,255,255,0.05);
+  --surface-border: rgba(255,255,255,0.09);
+  --surface-divider: rgba(255,255,255,0.05);
+  --glass-shine: rgba(255,255,255,0.13);
+
+  /* Nav */
+  --nav-bg: rgba(7,7,7,0.88);
+  --nav-border: rgba(255,255,255,0.09);
+  --nav-active-bg: rgba(190,255,0,0.12);
+  --nav-active-color: #BEFF00;
+  --nav-inactive-color: rgba(255,255,255,0.30);
+
+  --background: #070707;
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
@@ -146,6 +153,6 @@
   }
   html {
     @apply font-sans;
-    font-size: 17px;
+    font-size: 19px;
   }
 }

@@ -1,0 +1,113 @@
+{
+  "name": "Life OS - Weekly AI Spending Report",
+  "nodes": [
+    {
+      "id": "node-0001",
+      "name": "Sunday 9am",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [100, 300],
+      "typeVersion": 1.2,
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "cronExpression", "expression": "0 9 * * 0" }]
+        }
+      }
+    },
+    {
+      "id": "node-0002",
+      "name": "Fetch Expenses",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [320, 300],
+      "typeVersion": 4.2,
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/expenses",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "select", "value": "date,concept,category,amount,account" },
+            { "name": "date", "value": "=gte.{{ $now.minus(7, 'days').toFormat('yyyy-MM-dd') }}" },
+            { "name": "order", "value": "date.desc" }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "={{ $env.SUPABASE_ANON_KEY }}" },
+            { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_ANON_KEY }}" }
+          ]
+        }
+      }
+    },
+    {
+      "id": "node-0003",
+      "name": "Fetch Accounts",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [540, 300],
+      "typeVersion": 4.2,
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/accounts",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "select", "value": "name,balance,type" }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "={{ $env.SUPABASE_ANON_KEY }}" },
+            { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_ANON_KEY }}" }
+          ]
+        }
+      }
+    },
+    {
+      "id": "node-0004",
+      "name": "Claude Haiku",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [760, 300],
+      "typeVersion": 4.2,
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "={{ $env.ANTHROPIC_API_KEY }}" },
+            { "name": "anthropic-version", "value": "2023-06-01" },
+            { "name": "content-type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "body": "={\n  \"model\": \"claude-haiku-4-5-20251001\",\n  \"max_tokens\": 400,\n  \"messages\": [{\n    \"role\": \"user\",\n    \"content\": \"Eres el asistente financiero de Edu (Barcelona). Presupuesto mensual: ~€2002.\\n\\nGastos esta semana:\\n{{ JSON.stringify($('Fetch Expenses').all().map(i => i.json)) }}\\n\\nCuentas actuales:\\n{{ JSON.stringify($('Fetch Accounts').all().map(i => i.json)) }}\\n\\nEscribe un resumen en español, máximo 5 frases. Incluye: total gastado, categoría donde más se gastó, algo positivo, y una sugerencia concreta para la semana que viene. Sin saludos ni despedidas.\"\n  }]\n}"
+      }
+    },
+    {
+      "id": "node-0005",
+      "name": "Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "position": [980, 300],
+      "typeVersion": 1.2,
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=📊 *Resumen semanal*\n\n{{ $json.content[0].text }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "credentials": {
+        "telegramApi": { "id": "YOUR_TELEGRAM_CREDENTIAL_ID", "name": "Telegram" }
+      }
+    }
+  ],
+  "connections": {
+    "Sunday 9am":    { "main": [[{ "node": "Fetch Expenses", "type": "main", "index": 0 }]] },
+    "Fetch Expenses": { "main": [[{ "node": "Fetch Accounts", "type": "main", "index": 0 }]] },
+    "Fetch Accounts": { "main": [[{ "node": "Claude Haiku",   "type": "main", "index": 0 }]] },
+    "Claude Haiku":  { "main": [[{ "node": "Telegram",        "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}
