@@ -1,66 +1,13 @@
-import { supabase } from '@/lib/supabase'
+'use client'
+
+import useSWR from 'swr'
+import { createSupabaseBrowser } from '@/lib/supabase-browser'
 import { RingMetric } from '@/components/ring-metric'
 import { WeeklyPlanner } from '@/components/weekly-planner'
 import { GarminSync } from '@/components/garmin-sync'
 import { Scale, Footprints, Heart, Brain, Watch } from 'lucide-react'
 
-export const dynamic = 'force-dynamic'
-
-async function getHealthMetrics() {
-  try {
-    const d = new Date()
-    const pad = (n: number) => String(n).padStart(2, '0')
-    const today = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
-    const w = new Date(d); w.setDate(w.getDate() - 7)
-    const weekAgo = `${w.getFullYear()}-${pad(w.getMonth() + 1)}-${pad(w.getDate())}`
-    const { data } = await supabase
-      .from('health_metrics')
-      .select('*')
-      .gte('date', weekAgo)
-      .lte('date', today)
-      .order('date', { ascending: false })
-    return data ?? []
-  } catch {
-    return []
-  }
-}
-
-async function getPendingWorkouts() {
-  try {
-    const { data } = await supabase
-      .from('workouts')
-      .select('id, date, type, duration_min, notes, source')
-      .eq('source', 'garmin_pending')
-      .order('date', { ascending: false })
-      .limit(20)
-    return data ?? []
-  } catch {
-    return []
-  }
-}
-
-async function getRecentWorkouts() {
-  try {
-    const d = new Date()
-    const pad = (n: number) => String(n).padStart(2, '0')
-    const monthAgo = new Date(d); monthAgo.setDate(d.getDate() - 30)
-    const from = `${monthAgo.getFullYear()}-${pad(monthAgo.getMonth() + 1)}-${pad(monthAgo.getDate())}`
-    const { data } = await supabase
-      .from('workouts')
-      .select('id, date, type, duration_min, source, rpe')
-      .neq('source', 'garmin_pending')
-      .gte('date', from)
-      .order('date', { ascending: false })
-      .limit(30)
-    return data ?? []
-  } catch {
-    return []
-  }
-}
-
-function getLatestMetric(metrics: { metric: string; value: number }[], name: string) {
-  return metrics.find(m => m.metric === name) ?? null
-}
+const supabase = createSupabaseBrowser()
 
 const ACTIVITY_EMOJI: Record<string, string> = {
   run: '🏃', running: '🏃', ride: '🚴', cycling: '🚴',
@@ -82,20 +29,12 @@ function sourceColor(source: string) {
   return { bg: 'rgba(255,255,255,0.06)', border: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.3)' }
 }
 
-function sourceLabel(source: string) {
-  if (source === 'garmin') return 'Garmin'
-  if (source === 'app_builder') return 'IA'
-  return 'Manual'
-}
-
-// Build a 4-week activity grid (Mon–Sun per week)
 function buildActivityGrid(workouts: { date: string; type: string; source: string }[]) {
   const today = new Date()
-  // Go back to Monday of 3 weeks ago
   const jsDay = today.getDay()
   const daysToMon = jsDay === 0 ? 6 : jsDay - 1
   const startMonday = new Date(today)
-  startMonday.setDate(today.getDate() - daysToMon - 21) // 3 full weeks back + this week
+  startMonday.setDate(today.getDate() - daysToMon - 21)
 
   const byDate: Record<string, { type: string; source: string }[]> = {}
   for (const w of workouts) {
@@ -117,26 +56,48 @@ function buildActivityGrid(workouts: { date: string; type: string; source: strin
   return weeks
 }
 
-export default async function SaludPage() {
-  const [metrics, pendingWorkouts, recentWorkouts] = await Promise.all([
-    getHealthMetrics(),
-    getPendingWorkouts(),
-    getRecentWorkouts(),
-  ])
+export default function SaludPage() {
+  const pad = (n: number) => String(n).padStart(2, '0')
+  const d = new Date()
+  const today = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+  const w7 = new Date(d); w7.setDate(d.getDate() - 7)
+  const weekAgo = `${w7.getFullYear()}-${pad(w7.getMonth() + 1)}-${pad(w7.getDate())}`
+  const m30 = new Date(d); m30.setDate(d.getDate() - 30)
+  const monthAgo = `${m30.getFullYear()}-${pad(m30.getMonth() + 1)}-${pad(m30.getDate())}`
 
-  const weight    = getLatestMetric(metrics, 'weight_kg')
-  const steps     = getLatestMetric(metrics, 'steps')
-  const sleep     = getLatestMetric(metrics, 'sleep_hours')
-  const restingHr = getLatestMetric(metrics, 'resting_hr')
-  const hrv       = getLatestMetric(metrics, 'hrv')
+  const { data: metrics = [] } = useSWR('health-metrics', async () => {
+    const { data } = await supabase.from('health_metrics').select('*')
+      .gte('date', weekAgo).lte('date', today).order('date', { ascending: false })
+    return data ?? []
+  })
+
+  const { data: pendingWorkouts = [] } = useSWR('workouts-pending', async () => {
+    const { data } = await supabase.from('workouts')
+      .select('id,date,type,duration_min,notes,source')
+      .eq('source', 'garmin_pending').order('date', { ascending: false }).limit(20)
+    return data ?? []
+  })
+
+  const { data: recentWorkouts = [] } = useSWR('workouts-recent', async () => {
+    const { data } = await supabase.from('workouts')
+      .select('id,date,type,duration_min,source,rpe')
+      .neq('source', 'garmin_pending').gte('date', monthAgo)
+      .order('date', { ascending: false }).limit(30)
+    return data ?? []
+  })
+
+  const getLatest = (name: string) => metrics.find((m: { metric: string }) => m.metric === name) as { metric: string; value: number } | undefined
+
+  const weight    = getLatest('weight_kg')
+  const steps     = getLatest('steps')
+  const sleep     = getLatest('sleep_hours')
+  const restingHr = getLatest('resting_hr')
+  const hrv       = getLatest('hrv')
 
   const sleepPct    = sleep ? Math.round((sleep.value / 8) * 100) : 0
   const recoveryPct = hrv   ? Math.round(Math.min((hrv.value / 80) * 100, 100)) : 0
   const strainVal   = steps ? Math.min(steps.value / 1000, 21) : 0
   const hasAnyData  = metrics.length > 0
-
-  const today = new Date()
-  const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
 
   const activityGrid = buildActivityGrid(recentWorkouts as { date: string; type: string; source: string }[])
 
@@ -144,7 +105,6 @@ export default async function SaludPage() {
     <div className="min-h-screen bg-background text-foreground pb-28">
       <div className="max-w-md mx-auto px-4 pt-8 space-y-5">
 
-        {/* Header */}
         <div>
           <p className="text-xs text-foreground/40 uppercase tracking-widest font-medium">Salud</p>
           <p className="text-xs text-foreground/25">
@@ -152,13 +112,10 @@ export default async function SaludPage() {
           </p>
         </div>
 
-        {/* Whoop-style rings */}
         <div className="rounded-2xl p-5"
           style={{ background: 'var(--surface)', border: '1px solid var(--surface-border)' }}>
           {!hasAnyData && (
-            <p className="text-xs text-foreground/25 text-center mb-4">
-              Conecta Apple Health o registra métricas para ver tus datos
-            </p>
+            <p className="text-xs text-foreground/25 text-center mb-4">Conecta Apple Health o registra métricas</p>
           )}
           <div className="flex items-center justify-around">
             <RingMetric value={sleepPct}    color="#3B82F6" label="Sueño"        size={96} />
@@ -172,7 +129,6 @@ export default async function SaludPage() {
           )}
         </div>
 
-        {/* Daily metrics */}
         <div className="grid grid-cols-4 gap-2">
           {[
             { icon: Scale,      label: 'Peso',   value: weight    ? `${weight.value}kg` : '—',                 color: '#F97316' },
@@ -182,8 +138,7 @@ export default async function SaludPage() {
           ].map(({ icon: Icon, label, value, color }) => (
             <div key={label} className="rounded-2xl p-3 flex flex-col items-center gap-1.5"
               style={{ background: 'var(--surface)', border: '1px solid var(--surface-border)' }}>
-              <div className="size-7 rounded-full flex items-center justify-center"
-                style={{ background: `${color}18` }}>
+              <div className="size-7 rounded-full flex items-center justify-center" style={{ background: `${color}18` }}>
                 <Icon className="size-3.5" style={{ color }} />
               </div>
               <p className="text-sm font-bold text-foreground">{value}</p>
@@ -192,7 +147,6 @@ export default async function SaludPage() {
           ))}
         </div>
 
-        {/* Garmin sync */}
         <div className="rounded-2xl p-4"
           style={{ background: 'var(--surface)', border: '1px solid var(--surface-border)' }}>
           <div className="flex items-center gap-2 mb-3">
@@ -208,7 +162,6 @@ export default async function SaludPage() {
           <GarminSync pendingWorkouts={pendingWorkouts as { id: string; date: string; type: string; duration_min: number | null; notes: string | null; source: string }[]} />
         </div>
 
-        {/* 4-week activity grid */}
         {recentWorkouts.length > 0 && (
           <div className="rounded-2xl p-4"
             style={{ background: 'var(--surface)', border: '1px solid var(--surface-border)' }}>
@@ -220,25 +173,20 @@ export default async function SaludPage() {
                 <span className="flex items-center gap-1"><span className="size-1.5 rounded-full bg-foreground/20 inline-block" />Manual</span>
               </div>
             </div>
-
-            {/* Day labels */}
             <div className="grid grid-cols-7 gap-1 mb-1">
               {['L','M','X','J','V','S','D'].map(d => (
                 <p key={d} className="text-[9px] text-foreground/25 text-center">{d}</p>
               ))}
             </div>
-
-            {/* Week rows */}
             <div className="space-y-1">
               {activityGrid.map((week, wi) => (
                 <div key={wi} className="grid grid-cols-7 gap-1">
                   {week.map(({ date, dateStr, activities }) => {
-                    const isToday = dateStr === todayStr
-                    const isFuture = date > today
+                    const isToday = dateStr === today
+                    const isFuture = date > d
                     const hasActivity = activities.length > 0
                     const mainSource = activities[0]?.source ?? ''
                     const sc = hasActivity ? sourceColor(mainSource) : null
-
                     return (
                       <div key={dateStr}
                         title={hasActivity ? activities.map(a => `${activityEmoji(a.type)} ${a.type}`).join(', ') : dateStr}
@@ -248,9 +196,7 @@ export default async function SaludPage() {
                           border: isToday ? '1.5px solid rgba(255,255,255,0.4)' : sc ? `1px solid ${sc.border}` : '1px solid transparent',
                           opacity: isFuture ? 0.2 : 1,
                         }}>
-                        {hasActivity && (
-                          <span className="text-[10px] leading-none">{activityEmoji(activities[0].type)}</span>
-                        )}
+                        {hasActivity && <span className="text-[10px] leading-none">{activityEmoji(activities[0].type)}</span>}
                         {activities.length > 1 && (
                           <span className="absolute -top-0.5 -right-0.5 size-2.5 rounded-full bg-indigo-500 text-[7px] text-white flex items-center justify-center font-bold">
                             {activities.length}
@@ -262,14 +208,10 @@ export default async function SaludPage() {
                 </div>
               ))}
             </div>
-
-            <p className="text-[9px] text-foreground/20 mt-2 text-center">
-              {recentWorkouts.length} sesiones en los últimos 30 días
-            </p>
+            <p className="text-[9px] text-foreground/20 mt-2 text-center">{recentWorkouts.length} sesiones en los últimos 30 días</p>
           </div>
         )}
 
-        {/* Weekly Planner */}
         <div className="rounded-2xl p-4"
           style={{ background: 'var(--surface)', border: '1px solid var(--surface-border)' }}>
           <WeeklyPlanner />

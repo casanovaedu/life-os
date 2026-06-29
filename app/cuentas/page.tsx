@@ -1,6 +1,11 @@
-import { supabase } from '@/lib/supabase'
+'use client'
+
+import useSWR from 'swr'
+import { createSupabaseBrowser } from '@/lib/supabase-browser'
 import { formatEuro } from '@/lib/utils'
 import { BalanceEditor } from '@/components/balance-editor'
+
+const supabase = createSupabaseBrowser()
 
 const TYPE_CONFIG: Record<string, { label: string; color: string; desc: string }> = {
   cash:       { label: 'Efectivo',  color: '#3B82F6', desc: 'Disponible inmediatamente' },
@@ -9,21 +14,18 @@ const TYPE_CONFIG: Record<string, { label: string; color: string; desc: string }
   debt:       { label: 'Deuda',     color: '#EF4444', desc: 'Crédito y préstamos' },
 }
 
-export const dynamic = 'force-dynamic'
+export default function CuentasPage() {
+  const { data: accounts = [] } = useSWR('accounts', async () => {
+    const { data } = await supabase.from('accounts').select('*')
+      .order('type').order('balance', { ascending: false })
+    return data ?? []
+  })
 
-export default async function CuentasPage() {
-  const { data } = await supabase
-    .from('accounts')
-    .select('*')
-    .order('type')
-    .order('balance', { ascending: false })
-  const accounts = data ?? []
+  const netWorth    = accounts.reduce((s: number, a: { balance: number }) => s + Number(a.balance), 0)
+  const totalAssets = accounts.filter((a: { balance: number }) => Number(a.balance) > 0).reduce((s: number, a: { balance: number }) => s + Number(a.balance), 0)
+  const totalDebt   = accounts.filter((a: { balance: number }) => Number(a.balance) < 0).reduce((s: number, a: { balance: number }) => s + Number(a.balance), 0)
 
-  const netWorth    = accounts.reduce((s, a) => s + Number(a.balance), 0)
-  const totalAssets = accounts.filter(a => Number(a.balance) > 0).reduce((s, a) => s + Number(a.balance), 0)
-  const totalDebt   = accounts.filter(a => Number(a.balance) < 0).reduce((s, a) => s + Number(a.balance), 0)
-
-  const accountsByType = accounts.reduce<Record<string, typeof accounts>>((acc, a) => {
+  const accountsByType = accounts.reduce<Record<string, typeof accounts>>((acc, a: { type: string }) => {
     const t = a.type ?? 'cash'
     acc[t] = [...(acc[t] ?? []), a]
     return acc
@@ -33,21 +35,12 @@ export default async function CuentasPage() {
     <div className="min-h-screen bg-background text-foreground pb-28">
       <div className="max-w-md mx-auto px-4 pt-8 space-y-5">
 
-        {/* Header */}
         <p className="text-xs text-foreground/40 uppercase tracking-widest font-medium">Cuentas</p>
 
-        {/* Net worth summary */}
-        <div
-          className="rounded-2xl p-5 relative overflow-hidden"
-          style={{
-            background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(99,102,241,0.04))',
-            border: '1px solid rgba(99,102,241,0.2)',
-          }}
-        >
-          <div
-            className="absolute -top-8 -right-8 size-32 rounded-full opacity-20 blur-2xl pointer-events-none"
-            style={{ background: 'radial-gradient(circle, #6366F1, transparent)' }}
-          />
+        <div className="rounded-2xl p-5 relative overflow-hidden"
+          style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(99,102,241,0.04))', border: '1px solid rgba(99,102,241,0.2)' }}>
+          <div className="absolute -top-8 -right-8 size-32 rounded-full opacity-20 blur-2xl pointer-events-none"
+            style={{ background: 'radial-gradient(circle, #6366F1, transparent)' }} />
           <p className="text-xs text-foreground/50 uppercase tracking-widest mb-1">Patrimonio neto</p>
           <p className="text-4xl font-black text-foreground">{formatEuro(netWorth)}</p>
           <div className="mt-4 flex items-center gap-6">
@@ -63,32 +56,23 @@ export default async function CuentasPage() {
           </div>
         </div>
 
-        {/* Asset allocation bar */}
         {totalAssets > 0 && (
-          <div
-            className="rounded-2xl p-4"
-            style={{ background: 'var(--surface)', border: '1px solid var(--surface-border)' }}
-          >
+          <div className="rounded-2xl p-4"
+            style={{ background: 'var(--surface)', border: '1px solid var(--surface-border)' }}>
             <p className="text-xs font-semibold text-foreground/40 uppercase tracking-widest mb-3">Distribución</p>
             <div className="flex h-2 rounded-full overflow-hidden gap-0.5">
               {(['cash', 'savings', 'investment'] as const).map(type => {
                 const group = accountsByType[type] ?? []
-                const total = group.reduce((s, a) => s + Math.max(0, Number(a.balance)), 0)
+                const total = group.reduce((s: number, a: { balance: number }) => s + Math.max(0, Number(a.balance)), 0)
                 const pct = (total / totalAssets) * 100
                 if (pct < 1) return null
-                return (
-                  <div
-                    key={type}
-                    className="h-full rounded-full"
-                    style={{ width: `${pct}%`, background: TYPE_CONFIG[type].color }}
-                  />
-                )
+                return <div key={type} className="h-full rounded-full" style={{ width: `${pct}%`, background: TYPE_CONFIG[type].color }} />
               })}
             </div>
             <div className="flex items-center gap-4 mt-3">
               {(['cash', 'savings', 'investment'] as const).map(type => {
                 const group = accountsByType[type] ?? []
-                const total = group.reduce((s, a) => s + Math.max(0, Number(a.balance)), 0)
+                const total = group.reduce((s: number, a: { balance: number }) => s + Math.max(0, Number(a.balance)), 0)
                 const pct = totalAssets > 0 ? (total / totalAssets) * 100 : 0
                 if (!group.length) return null
                 return (
@@ -103,12 +87,11 @@ export default async function CuentasPage() {
           </div>
         )}
 
-        {/* Accounts by type */}
         {(['cash', 'savings', 'investment', 'debt'] as const).map(type => {
           const group = accountsByType[type]
           if (!group?.length) return null
           const cfg = TYPE_CONFIG[type]
-          const groupTotal = group.reduce((s, a) => s + Number(a.balance), 0)
+          const groupTotal = group.reduce((s: number, a: { balance: number }) => s + Number(a.balance), 0)
           return (
             <div key={type}>
               <div className="flex items-center justify-between mb-2">
@@ -116,35 +99,23 @@ export default async function CuentasPage() {
                   <span className="size-2 rounded-full" style={{ background: cfg.color }} />
                   <span className="text-xs font-semibold text-foreground/40 uppercase tracking-widest">{cfg.label}</span>
                 </div>
-                <span
-                  className="text-xs font-bold tabular-nums"
-                  style={{ color: groupTotal < 0 ? '#EF4444' : undefined }}
-                >
+                <span className="text-xs font-bold tabular-nums" style={{ color: groupTotal < 0 ? '#EF4444' : undefined }}>
                   {formatEuro(groupTotal)}
                 </span>
               </div>
-              <div
-                className="rounded-2xl overflow-hidden divide-y divide-foreground/5"
-                style={{ background: 'var(--surface)', border: '1px solid var(--surface-border)' }}
-              >
-                {group.map(account => (
+              <div className="rounded-2xl overflow-hidden divide-y divide-foreground/5"
+                style={{ background: 'var(--surface)', border: '1px solid var(--surface-border)' }}>
+                {group.map((account: { id: string; name: string; balance: number; type: string }) => (
                   <div key={account.id} className="flex items-center gap-3 px-4 py-3">
-                    <div
-                      className="size-9 rounded-2xl flex items-center justify-center shrink-0 text-sm font-black"
-                      style={{ background: `${cfg.color}18`, color: cfg.color }}
-                    >
+                    <div className="size-9 rounded-2xl flex items-center justify-center shrink-0 text-sm font-black"
+                      style={{ background: `${cfg.color}18`, color: cfg.color }}>
                       {account.name.charAt(0)}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-foreground">{account.name}</p>
                       <p className="text-xs text-foreground/30">{cfg.desc}</p>
                     </div>
-                    <BalanceEditor account={{
-                      id: account.id,
-                      name: account.name,
-                      balance: Number(account.balance),
-                      type: account.type,
-                    }} />
+                    <BalanceEditor account={{ id: account.id, name: account.name, balance: Number(account.balance), type: account.type }} />
                   </div>
                 ))}
               </div>
