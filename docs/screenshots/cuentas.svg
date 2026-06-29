@@ -3,27 +3,19 @@
   <text x="20" y="22" fill="#fff" font-size="15" font-weight="600">9:41</text>
   <rect x="330" y="12" width="42" height="16" rx="4" fill="none" stroke="#fff" stroke-width="1.5" opacity="0.6"/>
   <rect x="332" y="14" width="30" height="12" rx="2" fill="#BEFF00"/>
-  <rect x="372" y="16" width="2" height="8" rx="1" fill="#fff" opacity="0.6"/>
-
   <text x="20" y="65" fill="#555" font-size="11" letter-spacing="2" font-weight="600">CUENTAS</text>
-
-  <!-- Hero card -->
   <rect x="16" y="76" width="358" height="118" rx="16" fill="#141414" stroke="#222" stroke-width="1"/>
   <text x="32" y="102" fill="#555" font-size="11" letter-spacing="1.5" font-weight="600">PATRIMONIO NETO</text>
-  <text x="32" y="143" fill="#fff" font-size="40" font-weight="700" letter-spacing="-1">€7.852</text>
-  <text x="197" y="143" fill="#fff" font-size="28" font-weight="700">,45</text>
+  <text x="32" y="143" fill="#fff" font-size="40" font-weight="700" letter-spacing="-1">€24.350</text>
+  <text x="222" y="143" fill="#fff" font-size="28" font-weight="700">,00</text>
   <line x1="32" y1="162" x2="358" y2="162" stroke="#222" stroke-width="1"/>
   <text x="32" y="179" fill="#555" font-size="10" letter-spacing="1" font-weight="600">ACTIVOS</text>
-  <text x="32" y="193" fill="#BEFF00" font-size="13" font-weight="600">€8.894,45</text>
+  <text x="32" y="193" fill="#BEFF00" font-size="13" font-weight="600">€26.100,00</text>
   <line x1="180" y1="165" x2="180" y2="195" stroke="#333" stroke-width="1"/>
   <text x="195" y="179" fill="#555" font-size="10" letter-spacing="1" font-weight="600">DEUDAS</text>
-  <text x="195" y="193" fill="#FF5555" font-size="13" font-weight="600">€1.042,00</text>
-
-  <!-- Evolution chart card -->
+  <text x="195" y="193" fill="#FF5555" font-size="13" font-weight="600">€1.750,00</text>
   <text x="20" y="220" fill="#555" font-size="11" letter-spacing="2" font-weight="600">EVOLUCIÓN</text>
   <rect x="16" y="229" width="358" height="180" rx="16" fill="#141414" stroke="#222" stroke-width="1"/>
-
-  <!-- Range buttons -->
   <rect x="32" y="245" width="36" height="22" rx="11" fill="#1A1A1A"/>
   <text x="50" y="260" fill="#555" font-size="11" text-anchor="middle">1M</text>
   <rect x="74" y="245" width="36" height="22" rx="11" fill="#BEFF00"/>
@@ -32,58 +24,44 @@
   <text x="134" y="260" fill="#555" font-size="11" text-anchor="middle">6M</text>
   <rect x="158" y="245" width="36" height="22" rx="11" fill="#1A1A1A"/>
   <text x="176" y="260" fill="#555" font-size="11" text-anchor="middle">1A</text>
-  <text x="358" y="260" fill="#BEFF00" font-size="13" font-weight="600" text-anchor="end">+€420</text>
-
-  <!-- Chart line (simplified) -->
-  <polyline points="32,370 80,360 120,355 160,350 200,345 240,342 280,340 326,334" fill="none" stroke="#BEFF00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- Area under line -->
-  <polygon points="32,370 80,360 120,355 160,350 200,345 240,342 280,340 326,334 326,395 32,395" fill="#BEFF00" opacity="0.06"/>
-  <!-- Dot at end -->
-  <circle cx="326" cy="334" r="4" fill="#BEFF00"/>
-  <!-- X axis labels -->
-  <text x="32" y="410" fill="#333" font-size="10">abr</text>
-  <text x="130" y="410" fill="#333" font-size="10">may</text>
-  <text x="280" y="410" fill="#333" font-size="10">jun</text>
-
-  <!-- Distribution -->
+  <text x="358" y="260" fill="#BEFF00" font-size="13" font-weight="600" text-anchor="end">+€3.200</text>
+  <polyline points="32,380 80,368 120,360 160,348 200,338 240,328 280,318 326,304" fill="none" stroke="#BEFF00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <polygon points="32,380 80,368 120,360 160,348 200,338 240,328 280,318 326,304 326,395 32,395" fill="#BEFF00" opacity="0.06"/>
+  <circle cx="326" cy="304" r="4" fill="#BEFF00"/>
+  <text x="32" y="410" fill="#333" font-size="10">feb</text>
+  <text x="150" y="410" fill="#333" font-size="10">mar</text>
+  <text x="280" y="410" fill="#333" font-size="10">may</text>
   <text x="20" y="435" fill="#555" font-size="11" letter-spacing="2" font-weight="600">DISTRIBUCIÓN</text>
   <rect x="16" y="444" width="358" height="72" rx="16" fill="#141414" stroke="#222" stroke-width="1"/>
-  <!-- Bar -->
-  <rect x="32" y="462" width="120" height="8" rx="0" fill="#888"/>
-  <rect x="152" y="462" width="134" height="8" rx="0" fill="#BEFF00"/>
-  <rect x="286" y="462" width="72" height="8" rx="4" fill="#555"/>
+  <rect x="32" y="462" width="88" height="8" rx="0" fill="#888"/>
+  <rect x="120" y="462" width="148" height="8" rx="0" fill="#BEFF00"/>
+  <rect x="268" y="462" width="90" height="8" rx="4" fill="#555"/>
   <rect x="32" y="462" width="4" height="8" rx="4" fill="#888"/>
-  <!-- Legend -->
   <circle cx="40" cy="490" r="4" fill="#888"/>
-  <text x="50" y="494" fill="#888" font-size="11">Efectivo 23%</text>
-  <circle cx="135" cy="490" r="4" fill="#BEFF00"/>
-  <text x="145" y="494" fill="#888" font-size="11">Ahorro 42%</text>
-  <circle cx="228" cy="490" r="4" fill="#555"/>
-  <text x="238" y="494" fill="#888" font-size="11">Inversión 36%</text>
-
-  <!-- Account groups -->
+  <text x="50" y="494" fill="#888" font-size="11">Efectivo 18%</text>
+  <circle cx="140" cy="490" r="4" fill="#BEFF00"/>
+  <text x="150" y="494" fill="#888" font-size="11">Ahorro 48%</text>
+  <circle cx="235" cy="490" r="4" fill="#555"/>
+  <text x="245" y="494" fill="#888" font-size="11">Inversión 34%</text>
   <text x="20" y="540" fill="#555" font-size="11" letter-spacing="2" font-weight="600">EFECTIVO</text>
-  <text x="358" y="540" fill="#888" font-size="12" text-anchor="end">€2.014,08</text>
-  <rect x="16" y="549" width="358" height="90" rx="16" fill="#141414" stroke="#222" stroke-width="1"/>
-  <text x="32" y="575" fill="#fff" font-size="13" font-weight="500">BBVA Cash</text>
-  <text x="358" y="575" fill="#fff" font-size="13" font-weight="600" text-anchor="end">€1.446,29</text>
+  <text x="358" y="540" fill="#888" font-size="12" text-anchor="end">€4.380,00</text>
+  <rect x="16" y="549" width="358" height="70" rx="16" fill="#141414" stroke="#222" stroke-width="1"/>
+  <text x="32" y="575" fill="#fff" font-size="13" font-weight="500">Cuenta Corriente</text>
+  <text x="358" y="575" fill="#fff" font-size="13" font-weight="600" text-anchor="end">€2.840,00</text>
   <line x1="32" y1="584" x2="358" y2="584" stroke="#1E1E1E" stroke-width="1"/>
-  <text x="32" y="605" fill="#fff" font-size="13" font-weight="500">Revolut Cash</text>
-  <text x="358" y="605" fill="#fff" font-size="13" font-weight="600" text-anchor="end">€487,03</text>
-  <line x1="32" y1="614" x2="358" y2="614" stroke="#1E1E1E" stroke-width="1"/>
-  <text x="32" y="635" fill="#fff" font-size="13" font-weight="500">IBKR Cash</text>
-  <text x="358" y="635" fill="#fff" font-size="13" font-weight="600" text-anchor="end">€80,76</text>
-
-  <text x="20" y="664" fill="#555" font-size="11" letter-spacing="2" font-weight="600">AHORRO</text>
-  <text x="358" y="664" fill="#888" font-size="12" text-anchor="end">€3.712,37</text>
-  <rect x="16" y="673" width="358" height="70" rx="16" fill="#141414" stroke="#222" stroke-width="1"/>
-  <text x="32" y="699" fill="#fff" font-size="13" font-weight="500">Japan Fund</text>
-  <text x="358" y="699" fill="#fff" font-size="13" font-weight="600" text-anchor="end">€2.072,26</text>
-  <line x1="32" y1="708" x2="358" y2="708" stroke="#1E1E1E" stroke-width="1"/>
-  <text x="32" y="729" fill="#fff" font-size="13" font-weight="500">Revolut 2%</text>
-  <text x="358" y="729" fill="#fff" font-size="13" font-weight="600" text-anchor="end">€1.640,11</text>
-
-  <!-- Bottom nav -->
+  <text x="32" y="605" fill="#fff" font-size="13" font-weight="500">Cuenta Digital</text>
+  <text x="358" y="605" fill="#fff" font-size="13" font-weight="600" text-anchor="end">€1.540,00</text>
+  <text x="20" y="640" fill="#555" font-size="11" letter-spacing="2" font-weight="600">AHORRO</text>
+  <text x="358" y="640" fill="#888" font-size="12" text-anchor="end">€11.820,00</text>
+  <rect x="16" y="649" width="358" height="70" rx="16" fill="#141414" stroke="#222" stroke-width="1"/>
+  <text x="32" y="675" fill="#fff" font-size="13" font-weight="500">Japan Trip Fund</text>
+  <text x="358" y="675" fill="#fff" font-size="13" font-weight="600" text-anchor="end">€3.492,00</text>
+  <line x1="32" y1="684" x2="358" y2="684" stroke="#1E1E1E" stroke-width="1"/>
+  <text x="32" y="705" fill="#fff" font-size="13" font-weight="500">Emergency Fund</text>
+  <text x="358" y="705" fill="#fff" font-size="13" font-weight="600" text-anchor="end">€4.320,00</text>
+  <text x="20" y="740" fill="#555" font-size="11" letter-spacing="2" font-weight="600">INVERSIONES</text>
+  <text x="358" y="740" fill="#888" font-size="12" text-anchor="end">€8.150,00</text>
+  <rect x="16" y="749" width="358" height="0" rx="16" fill="#141414" stroke="#222" stroke-width="1"/>
   <rect x="0" y="760" width="390" height="84" fill="#0F0F0F" stroke="#1A1A1A" stroke-width="1"/>
   <text x="46" y="798" fill="#444" font-size="10" text-anchor="middle">Inicio</text>
   <text x="130" y="798" fill="#444" font-size="10" text-anchor="middle">Gastos</text>

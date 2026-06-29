@@ -3,114 +3,75 @@
   <text x="20" y="22" fill="#fff" font-size="15" font-weight="600">9:41</text>
   <rect x="330" y="12" width="42" height="16" rx="4" fill="none" stroke="#fff" stroke-width="1.5" opacity="0.6"/>
   <rect x="332" y="14" width="30" height="12" rx="2" fill="#BEFF00"/>
-  <rect x="372" y="16" width="2" height="8" rx="1" fill="#fff" opacity="0.6"/>
-
   <text x="20" y="65" fill="#555" font-size="11" letter-spacing="2" font-weight="600">SALUD</text>
-  <text x="358" y="65" fill="#555" font-size="11" text-anchor="end">29 jun</text>
-
-  <!-- Readiness hero -->
+  <text x="358" y="65" fill="#555" font-size="11" text-anchor="end">13 may</text>
   <rect x="16" y="76" width="358" height="110" rx="16" fill="#141414" stroke="#222" stroke-width="1"/>
   <text x="32" y="102" fill="#555" font-size="11" letter-spacing="1.5" font-weight="600">READINESS</text>
-
-  <!-- Big readiness circle -->
   <circle cx="290" cy="126" r="42" fill="none" stroke="#222" stroke-width="6"/>
-  <circle cx="290" cy="126" r="42" fill="none" stroke="#BEFF00" stroke-width="6"
-    stroke-dasharray="237" stroke-dashoffset="24" stroke-linecap="round"
-    transform="rotate(-90 290 126)"/>
-  <text x="290" y="132" fill="#BEFF00" font-size="22" font-weight="700" text-anchor="middle">94</text>
-
-  <text x="32" y="135" fill="#fff" font-size="42" font-weight="700">94</text>
-  <text x="32" y="155" fill="#555" font-size="12">Excelente hoy</text>
+  <circle cx="290" cy="126" r="42" fill="none" stroke="#BEFF00" stroke-width="6" stroke-dasharray="237" stroke-dashoffset="19" stroke-linecap="round" transform="rotate(-90 290 126)"/>
+  <text x="290" y="132" fill="#BEFF00" font-size="22" font-weight="700" text-anchor="middle">92</text>
+  <text x="32" y="135" fill="#fff" font-size="42" font-weight="700">92</text>
   <text x="88" y="135" fill="#555" font-size="16">/100</text>
-
-  <!-- Key metrics grid -->
+  <text x="32" y="155" fill="#555" font-size="12">Excelente hoy</text>
   <text x="20" y="214" fill="#555" font-size="11" letter-spacing="2" font-weight="600">HOY</text>
-
-  <!-- HRV -->
   <rect x="16" y="223" width="113" height="90" rx="14" fill="#141414" stroke="#222" stroke-width="1"/>
   <text x="74" y="247" fill="#555" font-size="10" letter-spacing="1" text-anchor="middle">HRV</text>
-  <text x="74" y="282" fill="#BEFF00" font-size="28" font-weight="700" text-anchor="middle">104</text>
+  <text x="74" y="282" fill="#BEFF00" font-size="28" font-weight="700" text-anchor="middle">88</text>
   <text x="74" y="302" fill="#333" font-size="10" text-anchor="middle">ms</text>
-
-  <!-- Resting HR -->
   <rect x="139" y="223" width="113" height="90" rx="14" fill="#141414" stroke="#222" stroke-width="1"/>
   <text x="196" y="247" fill="#555" font-size="10" letter-spacing="1" text-anchor="middle">FC REPOSO</text>
-  <text x="196" y="282" fill="#fff" font-size="28" font-weight="700" text-anchor="middle">44</text>
+  <text x="196" y="282" fill="#fff" font-size="28" font-weight="700" text-anchor="middle">52</text>
   <text x="196" y="302" fill="#333" font-size="10" text-anchor="middle">bpm</text>
-
-  <!-- Steps -->
   <rect x="262" y="223" width="112" height="90" rx="14" fill="#141414" stroke="#222" stroke-width="1"/>
   <text x="318" y="247" fill="#555" font-size="10" letter-spacing="1" text-anchor="middle">PASOS</text>
-  <text x="318" y="282" fill="#fff" font-size="22" font-weight="700" text-anchor="middle">1.707</text>
-  <text x="318" y="302" fill="#333" font-size="10" text-anchor="middle">de 8.000</text>
-
-  <!-- Sleep -->
+  <text x="318" y="282" fill="#fff" font-size="22" font-weight="700" text-anchor="middle">9.240</text>
+  <text x="318" y="302" fill="#333" font-size="10" text-anchor="middle">de 10.000</text>
   <text x="20" y="340" fill="#555" font-size="11" letter-spacing="2" font-weight="600">SUEÑO</text>
   <rect x="16" y="349" width="358" height="110" rx="16" fill="#141414" stroke="#222" stroke-width="1"/>
-
-  <!-- Sleep score ring -->
   <circle cx="74" cy="404" r="38" fill="none" stroke="#222" stroke-width="5"/>
-  <circle cx="74" cy="404" r="38" fill="none" stroke="#888" stroke-width="5"
-    stroke-dasharray="214" stroke-dashoffset="45" stroke-linecap="round"
-    transform="rotate(-90 74 404)"/>
-  <text x="74" y="410" fill="#fff" font-size="20" font-weight="700" text-anchor="middle">79</text>
-
+  <circle cx="74" cy="404" r="38" fill="none" stroke="#888" stroke-width="5" stroke-dasharray="214" stroke-dashoffset="32" stroke-linecap="round" transform="rotate(-90 74 404)"/>
+  <text x="74" y="410" fill="#fff" font-size="20" font-weight="700" text-anchor="middle">85</text>
   <text x="130" y="380" fill="#555" font-size="11" letter-spacing="1">DURACIÓN</text>
-  <text x="130" y="400" fill="#fff" font-size="24" font-weight="700">6h 10m</text>
+  <text x="130" y="400" fill="#fff" font-size="24" font-weight="700">7h 30m</text>
   <line x1="130" y1="415" x2="358" y2="415" stroke="#222" stroke-width="1"/>
   <text x="135" y="435" fill="#555" font-size="11">Profundo</text>
   <text x="220" y="435" fill="#555" font-size="11">REM</text>
   <text x="290" y="435" fill="#555" font-size="11">Ligero</text>
-  <text x="135" y="450" fill="#fff" font-size="12" font-weight="600">1h 20m</text>
-  <text x="220" y="450" fill="#fff" font-size="12" font-weight="600">1h 45m</text>
-  <text x="290" y="450" fill="#fff" font-size="12" font-weight="600">3h 05m</text>
-
-  <!-- Weekly trend -->
+  <text x="135" y="450" fill="#fff" font-size="12" font-weight="600">1h 45m</text>
+  <text x="220" y="450" fill="#fff" font-size="12" font-weight="600">2h 00m</text>
+  <text x="290" y="450" fill="#fff" font-size="12" font-weight="600">3h 45m</text>
   <text x="20" y="488" fill="#555" font-size="11" letter-spacing="2" font-weight="600">ESTA SEMANA</text>
   <rect x="16" y="497" width="358" height="150" rx="16" fill="#141414" stroke="#222" stroke-width="1"/>
-
-  <!-- Mini bar chart for HRV week -->
   <text x="32" y="520" fill="#555" font-size="11">HRV (ms)</text>
   <text x="358" y="520" fill="#BEFF00" font-size="11" text-anchor="end" font-weight="600">↑ tendencia</text>
-
-  <!-- Bars -->
-  <rect x="40" y="575" width="28" height="40" rx="4" fill="#333"/>
-  <text x="54" y="571" fill="#555" font-size="9" text-anchor="middle">82</text>
+  <rect x="40" y="548" width="28" height="52" rx="4" fill="#333"/>
+  <text x="54" y="544" fill="#555" font-size="9" text-anchor="middle">72</text>
   <text x="54" y="628" fill="#555" font-size="9" text-anchor="middle">L</text>
-
-  <rect x="82" y="590" width="28" height="25" rx="4" fill="#333"/>
-  <text x="96" y="586" fill="#555" font-size="9" text-anchor="middle">53</text>
+  <rect x="82" y="558" width="28" height="42" rx="4" fill="#333"/>
+  <text x="96" y="554" fill="#555" font-size="9" text-anchor="middle">65</text>
   <text x="96" y="628" fill="#555" font-size="9" text-anchor="middle">M</text>
-
-  <rect x="124" y="582" width="28" height="33" rx="4" fill="#333"/>
-  <text x="138" y="578" fill="#555" font-size="9" text-anchor="middle">73</text>
+  <rect x="124" y="545" width="28" height="55" rx="4" fill="#333"/>
+  <text x="138" y="541" fill="#555" font-size="9" text-anchor="middle">74</text>
   <text x="138" y="628" fill="#555" font-size="9" text-anchor="middle">X</text>
-
-  <rect x="166" y="600" width="28" height="15" rx="4" fill="#1A1A1A"/>
-  <text x="180" y="628" fill="#333" font-size="9" text-anchor="middle">J</text>
-
-  <rect x="208" y="595" width="28" height="20" rx="4" fill="#333"/>
-  <text x="222" y="591" fill="#555" font-size="9" text-anchor="middle">98</text>
+  <rect x="166" y="550" width="28" height="50" rx="4" fill="#333"/>
+  <text x="180" y="546" fill="#555" font-size="9" text-anchor="middle">70</text>
+  <text x="180" y="628" fill="#555" font-size="9" text-anchor="middle">J</text>
+  <rect x="208" y="538" width="28" height="62" rx="4" fill="#333"/>
+  <text x="222" y="534" fill="#555" font-size="9" text-anchor="middle">80</text>
   <text x="222" y="628" fill="#555" font-size="9" text-anchor="middle">V</text>
-
-  <rect x="250" y="570" width="28" height="45" rx="4" fill="#BEFF00"/>
-  <text x="264" y="566" fill="#BEFF00" font-size="9" text-anchor="middle">104</text>
+  <rect x="250" y="530" width="28" height="70" rx="4" fill="#BEFF00"/>
+  <text x="264" y="526" fill="#BEFF00" font-size="9" text-anchor="middle">88</text>
   <text x="264" y="628" fill="#BEFF00" font-size="9" font-weight="600" text-anchor="middle">S</text>
-
-  <!-- Stress / Body Battery -->
   <text x="20" y="672" fill="#555" font-size="11" letter-spacing="2" font-weight="600">ESTRÉS Y ENERGÍA</text>
   <rect x="16" y="681" width="172" height="64" rx="14" fill="#141414" stroke="#222" stroke-width="1"/>
   <text x="32" y="703" fill="#555" font-size="10" letter-spacing="1">ESTRÉS</text>
-  <text x="32" y="732" fill="#fff" font-size="28" font-weight="700">28</text>
+  <text x="32" y="732" fill="#fff" font-size="28" font-weight="700">22</text>
   <text x="76" y="732" fill="#555" font-size="13">/100</text>
   <text x="130" y="732" fill="#4ADE80" font-size="12" font-weight="600">bajo</text>
-
   <rect x="202" y="681" width="172" height="64" rx="14" fill="#141414" stroke="#222" stroke-width="1"/>
   <text x="218" y="703" fill="#555" font-size="10" letter-spacing="1">BODY BATTERY</text>
-  <text x="218" y="732" fill="#BEFF00" font-size="28" font-weight="700">76</text>
+  <text x="218" y="732" fill="#BEFF00" font-size="28" font-weight="700">84</text>
   <text x="262" y="732" fill="#555" font-size="13">/100</text>
-
-  <!-- Bottom nav -->
   <rect x="0" y="760" width="390" height="84" fill="#0F0F0F" stroke="#1A1A1A" stroke-width="1"/>
   <text x="46" y="798" fill="#444" font-size="10" text-anchor="middle">Inicio</text>
   <text x="130" y="798" fill="#444" font-size="10" text-anchor="middle">Gastos</text>

@@ -24,9 +24,13 @@ No manual data entry. No subscription. No third party holding your bank data.
 
 ## Screenshots
 
-| Dashboard | Gastos | Cuentas | Salud |
-|-----------|--------|---------|-------|
-| ![Dashboard](docs/screenshots/dashboard.svg) | ![Gastos](docs/screenshots/gastos.svg) | ![Cuentas](docs/screenshots/cuentas.svg) | ![Salud](docs/screenshots/salud.svg) |
+<p align="center">
+  <img src="docs/screenshots/dashboard.svg" width="19%" alt="Dashboard" />
+  <img src="docs/screenshots/gastos.svg" width="19%" alt="Gastos" />
+  <img src="docs/screenshots/cuentas.svg" width="19%" alt="Cuentas" />
+  <img src="docs/screenshots/salud.svg" width="19%" alt="Salud" />
+  <img src="docs/screenshots/entrenos.svg" width="19%" alt="Entrenos" />
+</p>
 
 ---
 
