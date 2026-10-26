@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
-export function MonthSelector({ current }: { current: string }) {
+export function MonthSelector({ current, basePath = '/gastos' }: { current: string; basePath?: string }) {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -14,7 +14,7 @@ export function MonthSelector({ current }: { current: string }) {
     const next_y = next_m === 13 ? y + 1 : next_m === 0 ? y - 1 : y
     const real_m = next_m === 13 ? 1 : next_m === 0 ? 12 : next_m
     const next = `${next_y}-${String(real_m).padStart(2, '0')}`
-    router.push(`/gastos?m=${next}`)
+    router.push(`${basePath}?m=${next}`)
   }
 
   const [year, month] = current.split('-').map(Number)

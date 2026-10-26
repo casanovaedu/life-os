@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import useSWR from 'swr'
 import { createSupabaseBrowser } from '@/lib/supabase-browser'
 import { formatEuro } from '@/lib/utils'
@@ -147,6 +148,15 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
+
+        {/* Monthly review entry */}
+        <Link href="/resumen" className="flex items-center justify-between rounded-[18px] px-4 py-3" style={GLASS}>
+          <div>
+            <p className="text-[11px] text-foreground/35 uppercase tracking-[0.15em]">Resumen del mes</p>
+            <p className="text-[11px] text-foreground/25">Dinero, salud y entrenos de un vistazo</p>
+          </div>
+          <span className="text-sm font-bold" style={{ color: '#BEFF00' }}>→</span>
+        </Link>
 
         {/* Accounts summary */}
         <div className="rounded-[18px] overflow-hidden" style={{ background: 'var(--surface)', border: '1px solid var(--surface-border)' }}>
